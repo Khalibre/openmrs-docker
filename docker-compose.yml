@@ -1,0 +1,42 @@
+services:
+  db:
+    image: mariadb:10.8.2
+    command: "mysqld --character-set-server=utf8 --collation-server=utf8_general_ci"
+    environment:
+      MYSQL_DATABASE: "openmrs"
+      MYSQL_USER: "openmrs"
+      MYSQL_PASSWORD: "openmrs"
+      MYSQL_ROOT_PASSWORD: "openmrs"
+    volumes:
+      - db-data:/var/lib/mysql
+
+  openmrs:
+    image: khalibre/openmrs-reference:latest
+    stop_grace_period: "60s"
+    build: ./2.11.0
+    depends_on:
+      - db
+    ports:
+      - "8080:8080"
+    environment:
+      OMRS_TOMCAT_JPDA_ENABLED: "false"
+      OMRS_CONFIG_MODULE_WEB_ADMIN: "true"
+      OMRS_CONFIG_AUTO_UPDATE_DATABASE: "true"
+      OMRS_CONFIG_CREATE_TABLES: "true"
+      OMRS_CONFIG_CONNECTION_SERVER: db
+      # OMRS_CONFIG_CONNECTION_URL: ${OPENMRS_DB_URL:-jdbc:mysql://localhost:3306/openmrs}
+      OMRS_CONFIG_ADD_DEMO_DATA: "false"
+      OMRS_CONFIG_CONNECTION_DATABASE: "openmrs"
+      OMRS_CONFIG_CONNECTION_USERNAME: "openmrs"
+      OMRS_CONFIG_CONNECTION_PASSWORD: "openmrs"
+      OMRS_TOMCAT_CONFIG_CORS_FILTER_ENABLED: "true"
+      OMRS_TOMCAT_CONFIG_CORS_FILTER_ALLOWED_ORIGINS: "*"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/openmrs"]
+      timeout: 5s
+    volumes:
+      - openmrs-data:/opt/openmrs/data
+
+volumes:
+  db-data:
+  openmrs-data:
