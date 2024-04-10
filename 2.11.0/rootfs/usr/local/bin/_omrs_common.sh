@@ -10,17 +10,17 @@ check_file_exists() {
 }
 
 insert_cors_filter_to_web_xml() {
-    local web_xml="/usr/local/tomcat/conf/web.xml"
+    local web_xml="${CATALINA_HOME}/conf/web.xml"
 
     if check_file_exists "$web_xml" && grep -q "CorsFilter" "$web_xml"; then
-        echo "[ENTRYPOINT] CORS filter block already added to '$web_xml'. Skipping."
+        echo "[ENTRYPOINT] : CORS filter block already added to '$web_xml'. Skipping."
     else
         local filter_block="<filter>\n\
             <filter-name>CorsFilter</filter-name>\n\
             <filter-class>org.apache.catalina.filters.CorsFilter</filter-class>\n\
             <init-param>\n\
                 <param-name>cors.allowed.origins</param-name>\n\
-                <param-value>${OMRS_TOMCAT_CONFIG_CORS_FILTER_ALLOWED_ORIGINS:-*}</param-value>\n\
+                <param-value>${OMRS_TOMCAT_CONFIG_CORS_FILTER_ALLOWED_ORIGINS:-}</param-value>\n\
             </init-param>\n\
             <init-param>\n\
                 <param-name>cors.allowed.methods</param-name>\n\
@@ -51,7 +51,7 @@ insert_cors_filter_to_web_xml() {
         if check_file_exists "$web_xml"; then
             sed -i "/<\/web-app>$/i $filter_block" "$web_xml"
         else
-            echo "[ENTRYPOINT] File '$web_xml' not found. Skipping CORS filter configuration."
+            echo "[ENTRYPOINT] : File '$web_xml' not found. Skipping CORS filter configuration."
         fi
     fi
 }

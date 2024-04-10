@@ -59,6 +59,9 @@ services:
 
 The OpenMRS container can create a default `admin` user and password. You can set the credentials with the following environment variable `OMRS_CONFIG_ADMIN_USER_PASSWORD` which is defaults to `Admin123`.
 
+> [!WARNING]
+> The default password is `Admin123` and should be changed in production environments.
+
 ## Environment variables
 
 ### OpenMRS Environment Variables
@@ -94,8 +97,13 @@ Bellow are Tomcat specific environment variables that can be used in the contain
 | :------------------- | :---------- | :------ |
 | `OMRS_TOMCAT_JPDA_ENABLED` | Enable JPDA | `false` |
 | `JPDA_ADDRESS` | JPDA address | `0.0.0.0:8000` |
-| `OMRS_TOMCAT_CONFIG_CORS_FILTER_ENABLED` | Enable CORS filter | `false` |
-| `OMRS_TOMCAT_CONFIG_CORS_FILTER_ALLOWED_ORIGINS` | CORS filter allowed origins | `*` |
+| `OMRS_TOMCAT_CONFIG_SESSION_TIMEOUT` | Session timeout | not set tomcat default is 30 minutes |
+| `OMRS_TOMCAT_CONFIG_CORS_FILTER_ENABLED` | Enable CORS filter when se to `true` tomcat filters will be added with the following options: `Access-Control-Allow-Origin` value from `OMRS_TOMCAT_CONFIG_CORS_FILTER_ALLOWED_ORIGINS` | `false` |
+| `OMRS_TOMCAT_CONFIG_CORS_FILTER_ALLOWED_ORIGINS` | CORS filter allowed origins | not set |
+
+## Providing Files to the Container
+
+You add more modules or configurations files to OpenMRS home directory by mouting them in the `/mnt/openmrs/files` directory. Those files will be copied to OpenMRS home directory.
 
 ## Contributing
 

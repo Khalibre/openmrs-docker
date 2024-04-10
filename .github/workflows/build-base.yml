@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - '2.11.0/**'
+      - 'base/**'
 
 jobs:
   build:
@@ -25,15 +25,16 @@ jobs:
           flavor: |
             latest=true
           images: |
-            khalibre/openmrs-reference
-            ghcr.io/Khalibre/openmrs-reference
+            khalibre/openmrs-tomcat-base
+            ghcr.io/Khalibre/openmrs-tomcat-base
           tags: |
-            type=raw,value=2.11.0-{{date 'YYYYMMDD' tz='Asia/Phnom_Penh'}}-${{ github.run_number }},enable=${{ github.event_name == 'push' && github.ref_type == 'branch' }}
+            type=raw,value=7-jdk8-jammy
+            type=raw,value=7-jdk8-jammy-{{date 'YYYYMMDD' tz='Asia/Phnom_Penh'}}-${{ github.run_number }},enable=${{ github.event_name == 'push' && github.ref_type == 'branch' }}
       -
         name: Build and push
         uses: docker/build-push-action@v5
         with:
-          context: ./2.11.0
+          context: ./base
           push: true
           load: false
           tags: ${{ steps.docker_meta.outputs.tags }}
