@@ -73,7 +73,7 @@ Bellow are OpenMRS specific environment variables that can be used in the contai
 | `OMRS_CONFIG_ADMIN_USER_PASSWORD` | Initial admin user password for OpenMRS login | `Admin123` |
 | `OMRS_CONFIG_ADD_DEMO_DATA` | Automatically add demo data to OpenMRS database | `false` |
 | `OMRS_CONFIG_AUTO_UPDATE_DATABASE` | Automatically update OpenMRS database | `true` |
-| `OMRS_CONFIG_CONNECTION_NAME` | OpenMRS database name | `openmrs` |
+| `OMRS_CONFIG_CONNECTION_DATABASE` | OpenMRS database name | `openmrs` |
 | `OMRS_CONFIG_CONNECTION_PASSWORD` | OpenMRS database password | `openmrs` |
 | `OMRS_CONFIG_CONNECTION_PORT` | OpenMRS database port | `3306` |
 | `OMRS_CONFIG_CONNECTION_ROOT_PASSWORD` | OpenMRS database root password | `openmrs` |

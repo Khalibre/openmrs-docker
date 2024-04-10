@@ -19,18 +19,18 @@ services:
     ports:
       - "8080:8080"
     environment:
-      OMRS_TOMCAT_JPDA_ENABLED: "false"
-      OMRS_CONFIG_MODULE_WEB_ADMIN: "true"
-      OMRS_CONFIG_AUTO_UPDATE_DATABASE: "false"
-      OMRS_CONFIG_CREATE_TABLES: "true"
-      OMRS_CONFIG_CONNECTION_SERVER: db
       OMRS_CONFIG_ADD_DEMO_DATA: "true"
+      OMRS_CONFIG_AUTO_UPDATE_DATABASE: "false"
       OMRS_CONFIG_CONNECTION_DATABASE: "openmrs"
-      OMRS_CONFIG_CONNECTION_USERNAME: "openmrs"
       OMRS_CONFIG_CONNECTION_PASSWORD: "openmrs"
+      OMRS_CONFIG_CONNECTION_SERVER: db
+      OMRS_CONFIG_CONNECTION_USERNAME: "openmrs"
+      OMRS_CONFIG_CREATE_TABLES: "true"
+      OMRS_CONFIG_HAS_CURRENT_OPENMRS_DATABASE: "true"
+      OMRS_CONFIG_MODULE_WEB_ADMIN: "true"
       OMRS_TOMCAT_CONFIG_CORS_FILTER_ENABLED: "true"
       OMRS_TOMCAT_CONFIG_SESSION_TIMEOUT: "60"
-      OMRS_CONFIG_HAS_CURRENT_OPENMRS_DATABASE: "true"
+      OMRS_TOMCAT_JPDA_ENABLED: "false"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/openmrs"]
       timeout: 5s

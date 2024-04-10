@@ -48,8 +48,8 @@ function config_tomcat {
       echo ""
       echo "[ENTRYPOINT] : Copying files from ${OMRS_MOUNT_DIR}/files:"
       echo ""
-      echo "[ENTRYPOINT] : ... into ${OMRS_HOME}."
-      cp -r "${OMRS_MOUNT_DIR}/files"/* "${OMRS_HOME}"
+      echo "[ENTRYPOINT] : ... into ${OMRS_DISTRO_DIR}."
+      cp -r ${OMRS_MOUNT_DIR}/files/* ${OMRS_DISTRO_DIR}/
       echo ""
   else
       echo ""
@@ -95,32 +95,31 @@ function generate_omrs_config {
 
   configure_database
 
-  if ! check_file_exists "$config_file"; then
-    echo "[ENTRYPOINT] : File '$config_file' not found. Genetaring new one."
-    printf '%s\n' \
-      "add_demo_data=${OMRS_CONFIG_ADD_DEMO_DATA}" \
-      "admin_user_password=${OMRS_CONFIG_ADMIN_USER_PASSWORD}" \
-      "auto_update_database=${OMRS_CONFIG_AUTO_UPDATE_DATABASE}" \
-      "connection.driver_class=${OMRS_CONFIG_CONNECTION_DRIVER_CLASS}" \
-      "create_database_username=${OMRS_CONFIG_CONNECTION_ROOT_USERNAME}" \
-      "create_database_password=${OMRS_CONFIG_CONNECTION_ROOT_PASSWORD}" \
-      "create_user_username=${OMRS_CONFIG_CONNECTION_ROOT_USERNAME}" \
-      "create_user_password=${OMRS_CONFIG_CONNECTION_ROOT_PASSWORD}" \
-      "connection.username=${OMRS_CONFIG_CONNECTION_USERNAME}" \
-      "connection.password=${OMRS_CONFIG_CONNECTION_PASSWORD}" \
-      "connection.url=${OMRS_CONFIG_CONNECTION_URL}" \
-      "create_database_user=${OMRS_CONFIG_CREATE_DATABASE_USER}" \
-      "create_tables=${OMRS_CONFIG_CREATE_TABLES}" \
-      "has_current_openmrs_database=${OMRS_CONFIG_HAS_CURRENT_OPENMRS_DATABASE}" \
-      "install_method=${OMRS_CONFIG_INSTALL_METHOD}" \
-      "module_web_admin=${OMRS_CONFIG_MODULE_WEB_ADMIN}" \
-      "module.allow_web_admin=${OMRS_CONFIG_MODULE_WEB_ADMIN}" > "$config_file"
-
-    echo "[ENTRYPOINT] : OpenMRS configuration file created at: $config_file"
-  else
-    echo "[ENTRYPOINT] : OpenMRS configuration file already exists at '$config_file'. Skipping."
+  if check_file_exists "$config_file"; then
+    echo "[ENTRYPOINT] : File '$config_file found. Backup and genetaring new one to replace it."
+    cp "$config_file" "$config_file.bak"
   fi
+  printf '%s\n' \
+    "add_demo_data=${OMRS_CONFIG_ADD_DEMO_DATA}" \
+    "admin_user_password=${OMRS_CONFIG_ADMIN_USER_PASSWORD}" \
+    "application_data_directory=${OMRS_DATA_DIR}" \
+    "auto_update_database=${OMRS_CONFIG_AUTO_UPDATE_DATABASE}" \
+    "connection.driver_class=${OMRS_CONFIG_CONNECTION_DRIVER_CLASS}" \
+    "create_database_username=${OMRS_CONFIG_CONNECTION_ROOT_USERNAME}" \
+    "create_database_password=${OMRS_CONFIG_CONNECTION_ROOT_PASSWORD}" \
+    "create_user_username=${OMRS_CONFIG_CONNECTION_ROOT_USERNAME}" \
+    "create_user_password=${OMRS_CONFIG_CONNECTION_ROOT_PASSWORD}" \
+    "connection.username=${OMRS_CONFIG_CONNECTION_USERNAME}" \
+    "connection.password=${OMRS_CONFIG_CONNECTION_PASSWORD}" \
+    "connection.url=${OMRS_CONFIG_CONNECTION_URL}" \
+    "create_database_user=${OMRS_CONFIG_CREATE_DATABASE_USER}" \
+    "create_tables=${OMRS_CONFIG_CREATE_TABLES}" \
+    "has_current_openmrs_database=${OMRS_CONFIG_HAS_CURRENT_OPENMRS_DATABASE}" \
+    "install_method=${OMRS_CONFIG_INSTALL_METHOD}" \
+    "module_web_admin=${OMRS_CONFIG_MODULE_WEB_ADMIN}" \
+    "module.allow_web_admin=${OMRS_CONFIG_MODULE_WEB_ADMIN}" > "$config_file"
 
+  echo "[ENTRYPOINT] : OpenMRS configuration file created at: $config_file"
   echo "[ENTRYPOINT] : File $OMRS_RUNTIME_PROPERTIES_FILE will create copying with $OMRS_SERVER_PROPERTIES_FILE"
   cp $OMRS_SERVER_PROPERTIES_FILE $OMRS_RUNTIME_PROPERTIES_FILE
 }
@@ -147,7 +146,7 @@ function configure_database {
     OMRS_CONFIG_CONNECTION_ARGS="${OMRS_CONFIG_CONNECTION_ARGS:-?autoReconnect=true&sessionVariables=default_storage_engine=InnoDB&useUnicode=true&characterEncoding=UTF-8}"
   fi
 
-  OMRS_CONFIG_CONNECTION_URL="${OMRS_CONFIG_CONNECTION_URL:-jdbc:${OMRS_CONFIG_JDBC_URL_PROTOCOL}://${OMRS_CONFIG_CONNECTION_SERVER}:${OMRS_CONFIG_CONNECTION_PORT}/${OMRS_CONFIG_CONNECTION_NAME}${OMRS_CONFIG_CONNECTION_ARGS}${OMRS_CONFIG_CONNECTION_EXTRA_ARGS}}"
+  OMRS_CONFIG_CONNECTION_URL="${OMRS_CONFIG_CONNECTION_URL:-jdbc:${OMRS_CONFIG_JDBC_URL_PROTOCOL}://${OMRS_CONFIG_CONNECTION_SERVER}:${OMRS_CONFIG_CONNECTION_PORT}/${OMRS_CONFIG_CONNECTION_DATABASE}${OMRS_CONFIG_CONNECTION_ARGS}${OMRS_CONFIG_CONNECTION_EXTRA_ARGS}}"
 }
 
 main
