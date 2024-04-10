@@ -24,18 +24,17 @@ services:
       OMRS_CONFIG_AUTO_UPDATE_DATABASE: "true"
       OMRS_CONFIG_CREATE_TABLES: "true"
       OMRS_CONFIG_CONNECTION_SERVER: db
-      # OMRS_CONFIG_CONNECTION_URL: ${OPENMRS_DB_URL:-jdbc:mysql://localhost:3306/openmrs}
       OMRS_CONFIG_ADD_DEMO_DATA: "false"
       OMRS_CONFIG_CONNECTION_DATABASE: "openmrs"
       OMRS_CONFIG_CONNECTION_USERNAME: "openmrs"
       OMRS_CONFIG_CONNECTION_PASSWORD: "openmrs"
       OMRS_TOMCAT_CONFIG_CORS_FILTER_ENABLED: "true"
-      OMRS_TOMCAT_CONFIG_CORS_FILTER_ALLOWED_ORIGINS: "*"
+      OMRS_TOMCAT_CONFIG_SESSION_TIMEOUT: "60"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/openmrs"]
       timeout: 5s
-    volumes:
-      - openmrs-data:/opt/openmrs/data
+    # volumes:
+    #   - openmrs-data:/opt/openmrs/data
 
 volumes:
   db-data:
