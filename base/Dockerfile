@@ -1,8 +1,12 @@
 FROM azul/zulu-openjdk:8u402-8.76
 
-ENV CATALINA_HOME /opt/openmrs/tomcat
+ENV BASE_DIR /opt/openmrs
+ENV OMRS_HOME ${BASE_DIR}/data
+ENV CATALINA_HOME ${BASE_DIR}/tomcat
 ENV PATH $CATALINA_HOME/bin:$PATH
-RUN mkdir -p "$CATALINA_HOME"
+RUN mkdir -p "$CATALINA_HOME" && \
+  mkdir -p "$OMRS_HOME"
+
 WORKDIR $CATALINA_HOME
 
 # let "Tomcat Native" live somewhere isolated
@@ -135,14 +139,19 @@ RUN set -eux; \
   echo >&2 "$nativeLines"; \
   exit 1; \
   fi
+RUN apt-get update && apt-get install -y --no-install-recommends \
+  ca-certificates \
+  curl \
+  tini && \
+  apt-get clean && rm -rf /var/lib/apt/lists/*;
 
 RUN adduser --disabled-password --home /opt/openmrs openmrs --uid 1000 && \
   addgroup openmrs openmrs && \
   usermod -g 1000 openmrs && \
-  mkdir -p ${CATALINA_HOME} && \
-  chown -R openmrs:openmrs ${CATALINA_HOME}
+  chown -R openmrs:openmrs ${BASE_DIR}
 
 USER openmrs
 
 EXPOSE 8080
+
 CMD ["catalina.sh", "run"]
